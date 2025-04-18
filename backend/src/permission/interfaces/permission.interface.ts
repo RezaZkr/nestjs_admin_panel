@@ -1,4 +1,6 @@
 export interface PermissionInterface {
-  id: number;
+  id?: number;
   name: string;
+  label: string;
+  group: string;
 }

@@ -2,8 +2,7 @@
 import { computed, onBeforeMount, reactive, ref, watch } from 'vue';
 import axios from 'axios';
 import { debounce } from 'lodash-es';
-import { useRoute,useRouter } from 'vue-router';
-
+import { useRoute, useRouter } from 'vue-router';
 
 /////////////////////////////////////////////////////////////Variables////////////////////////////////////////////////////////////////
 const breadcrumbHome = ref({
@@ -43,7 +42,6 @@ const tableData = reactive({
 });
 
 const pageUrl = computed(() => {
-
     let url = new URL(window.location.href);
 
     url.searchParams.delete('name');
@@ -62,13 +60,11 @@ const pageUrl = computed(() => {
 /////////////////////////////////////////////////////////////Methods////////////////////////////////////////////////////////////////
 
 const fetchData = async () => {
-
     loading.value = true;
     try {
         const response = await axios.get(pageUrl.value);
 
         Object.assign(tableData, response.data);
-
     } catch (error) {
         console.log('error');
         console.log(error);
@@ -82,8 +78,7 @@ const edit = async (id) => {
     console.log('edit');
     console.log(id);
     console.log('edit');
-  await  router.push({ name: 'access.roles.edit', params: { id: id } })
-
+    await router.push({ name: 'access.roles.edit', params: { id: id } });
 };
 
 const destroy = async (id) => {
@@ -105,10 +100,12 @@ onBeforeMount(() => {
     fetchData();
 });
 
-watch(() => pageUrl.value, debounce(() => {
-    fetchData();
-}, 1000));
-
+watch(
+    () => pageUrl.value,
+    debounce(() => {
+        fetchData();
+    }, 1000)
+);
 
 /////////////////////////////////////////////////////////////Other////////////////////////////////////////////////////////////////
 </script>
@@ -118,7 +115,7 @@ watch(() => pageUrl.value, debounce(() => {
         <div class="flex flex-col gap-6">
             <Breadcrumb :home="breadcrumbHome" :model="breadcrumbItems">
                 <template #item="{ item, props }">
-                    <router-link v-if="item.route" v-slot="{ href, navigate }" :to="{name:item.route}" custom>
+                    <router-link v-if="item.route" v-slot="{ href, navigate }" :to="{ name: item.route }" custom>
                         <a :href="href" v-bind="props.action" @click="navigate">
                             <span :class="[item.icon, 'text-color']" />
                             <span class="text-primary font-semibold">{{ item.label }}</span>
@@ -130,26 +127,22 @@ watch(() => pageUrl.value, debounce(() => {
                 </template>
             </Breadcrumb>
 
-
             <div class="card flex flex-col gap-4 w-full">
+                <div class="font-semibold text-xl">List</div>
 
-                <div class="font-semibold text-xl">
-                    List
-                </div>
-
-                <DataTable :value="tableData.data"
-                           :loading="loading"
-                           :rows="tableData.pagination.page_size"
-                           :first="((filter.page - 1) * tableData.pagination.page_size)"
-                           :totalRecords="tableData.pagination.total_count"
-                           :lazy="true"
-                           @page="onPageChange"
-                           paginator
-                           removableSort
-                           :rowsPerPageOptions="[10, 20,50]"
-                           tableStyle="min-width: 50rem"
+                <DataTable
+                    :value="tableData.data"
+                    :loading="loading"
+                    :rows="tableData.pagination.page_size"
+                    :first="(filter.page - 1) * tableData.pagination.page_size"
+                    :totalRecords="tableData.pagination.total_count"
+                    :lazy="true"
+                    @page="onPageChange"
+                    paginator
+                    removableSort
+                    :rowsPerPageOptions="[10, 20, 50]"
+                    tableStyle="min-width: 50rem"
                 >
-
                     <template #header>
                         <div class="flex justify-end">
                             <IconField>
@@ -167,23 +160,12 @@ watch(() => pageUrl.value, debounce(() => {
                     <Column header="Actions" style="width: 25%">
                         <template #body="slotProps">
                             <div class="flex gap-3">
-                                <Button
-                                    icon="pi pi-pencil"
-                                    severity="info"
-                                    rounded variant="text"
-                                    @click="edit(slotProps.data.id)"
-                                />
-                                <Button
-                                    icon="pi pi-trash"
-                                    severity="danger"
-                                    rounded variant="text"
-                                    @click="destroy(slotProps.data.id)"
-                                />
+                                <Button icon="pi pi-pencil" severity="info" rounded variant="text" @click="edit(slotProps.data.id)" />
+                                <Button icon="pi pi-trash" severity="danger" rounded variant="text" @click="destroy(slotProps.data.id)" />
                             </div>
                         </template>
                     </Column>
                 </DataTable>
-
             </div>
         </div>
     </Fluid>

@@ -1,9 +1,10 @@
-import { Controller, Get, Query, UseGuards, Param, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Param, ParseIntPipe, Post, Body } from '@nestjs/common';
 import { RoleService } from '../services/role.service';
 import { RoleResourceDto } from '../dto/role-resource.dto';
 import { RoleIndexDto } from '../dto/role-index.dto';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
 import { AuthGuard } from '@auth/guards/auth.guard';
+import { UpdateRoleDto } from '../dto/update-role.dto';
 
 @UseGuards(AuthGuard)
 @Controller('roles')
@@ -18,5 +19,10 @@ export class RoleController {
   @Get(':id')
   async show(@Param('id', ParseIntPipe) id: number): Promise<RoleResourceDto> {
     return this.roleService.show(id);
+  }
+
+  @Post(':id')
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateRoleDto: UpdateRoleDto): Promise<RoleResourceDto> {
+    return this.roleService.update(id, updateRoleDto);
   }
 }

@@ -1,6 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from './generated/client';
 import * as bcrypt from 'bcrypt';
 import { UserInterface } from '@user/interfaces/user.interface';
+import { PermissionInterface } from '../src/permission/interfaces/permission.interface';
 
 const prisma = new PrismaClient();
 
@@ -15,10 +16,50 @@ async function main() {
     },
   });
 
-  await prisma.permission.createMany({
-    data: [{ name: 'view_users' }, { name: 'edit_users' }, { name: 'delete_users' }],
-    skipDuplicates: true,
-  });
+  const permissions: PermissionInterface[] = [
+    {
+      name: 'view_users',
+      label: 'view user',
+      group: 'user',
+    },
+    {
+      name: 'edit_users',
+      label: 'edit user',
+      group: 'user',
+    },
+    {
+      name: 'delete_users',
+      label: 'delete user',
+      group: 'user',
+    },
+    //////////////////////role
+    {
+      name: 'view_roles',
+      label: 'view role',
+      group: 'role',
+    },
+    {
+      name: 'edit_roles',
+      label: 'edit role',
+      group: 'role',
+    },
+    {
+      name: 'delete_roles',
+      label: 'delete role',
+      group: 'role',
+    },
+  ];
+
+  for (const permission of permissions) {
+    await prisma.permission.upsert({
+      where: { name: permission.name },
+      update: {
+        label: permission.label,
+        group: permission.group,
+      },
+      create: permission,
+    });
+  }
 
   const adminRole = await prisma.role.upsert({
     where: { name: 'admin' },

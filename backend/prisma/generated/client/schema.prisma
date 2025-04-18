@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// model User {
+//   id         Int      @id @default(autoincrement())
+//   email      String   @unique
+//   name       String?
+//   password   String
+//   created_at DateTime @default(now())
+//   updated_at DateTime @updatedAt
+//
+//   @@map("users")
+// }
+
+model User {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  name       String?
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  roles UserRole[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int              @id @default(autoincrement())
+  name        String           @unique
+  users       UserRole[]
+  permissions RolePermission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id    Int              @id @default(autoincrement())
+  name  String           @unique
+  group String?
+  label String?
+  roles RolePermission[]
+
+  @@map("permissions")
+}
+
+model UserRole {
+  user_id Int
+  role_id Int
+
+  user User @relation(fields: [user_id], references: [id])
+  role Role @relation(fields: [role_id], references: [id])
+
+  @@id([user_id, role_id])
+  @@map("user_roles")
+}
+
+model RolePermission {
+  role_id       Int
+  permission_id Int
+
+  role       Role       @relation(fields: [role_id], references: [id])
+  permission Permission @relation(fields: [permission_id], references: [id])
+
+  @@id([role_id, permission_id])
+  @@map("role_permissions")
+}

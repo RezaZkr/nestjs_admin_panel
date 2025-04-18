@@ -58,6 +58,7 @@ npm install
 
 # Start backend (NestJS)
 cd backend
+npx prisma db seed
 npm run start:dev
 
 # Start frontend (Vue.js)

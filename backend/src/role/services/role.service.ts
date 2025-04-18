@@ -6,6 +6,7 @@ import { RoleIndexDto } from '../dto/role-index.dto';
 import { Prisma } from '@prisma/client';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
 import { RoleInterface } from '../interfaces/role.interface';
+import { UpdateRoleDto } from '../dto/update-role.dto';
 
 @Injectable()
 export class RoleService {
@@ -22,7 +23,6 @@ export class RoleService {
           },
         }
       : {};
-    //todo implement page front side
 
     //cursor pagination example
     // const { name, take, cursor } = query;
@@ -88,6 +88,24 @@ export class RoleService {
     if (!role) {
       throw new NotFoundException();
     }
+
+    return plainToInstance(RoleResourceDto, role, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async update(id: number, body: UpdateRoleDto): Promise<RoleResourceDto> {
+    const role: RoleInterface = await this.prismaService.role.findUnique({
+      where: {
+        id,
+      },
+    });
+
+    if (!role) {
+      throw new NotFoundException();
+    }
+
+    //todo implement update role with their permissions
 
     return plainToInstance(RoleResourceDto, role, {
       excludeExtraneousValues: true,

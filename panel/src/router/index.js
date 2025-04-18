@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 import { AuthService } from '@/services/auth/AuthService';
 
-
 const router = createRouter({
     history: createWebHistory(),
     routes: [
@@ -60,12 +59,11 @@ const router = createRouter({
             path: '/:pathMatch(.*)*',
             name: '404',
             component: () => import('@/views/pages/NotFound.vue')
-        },
+        }
     ]
 });
 
 router.beforeEach(async (to, from, next) => {
-
     const authStore = useAuthStore();
 
     if (!authStore.isAuthReady) {
@@ -79,7 +77,6 @@ router.beforeEach(async (to, from, next) => {
     } else {
         next();
     }
-
 });
 
 export default router;

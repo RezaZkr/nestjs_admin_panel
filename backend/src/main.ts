@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from '@global/interceptors/http-exception.filter';
-import * as cookieParser from 'cookie-parser'; //access to the cookie from request directly.see RefreshTokenGuard
+import * as cookieParser from 'cookie-parser';
+import { validationExceptionFactory } from '@global/exceptions/validation.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,10 +14,13 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
+      skipMissingProperties: false,
+      exceptionFactory: validationExceptionFactory,
     }),
   );
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  //when enable error message structure wrong
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   app.enableCors({
     origin: 'http://localhost:5173',

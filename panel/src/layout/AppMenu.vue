@@ -15,7 +15,7 @@ const model = ref([
     {
         label: 'Auth',
         items: [{ label: 'Logout', icon: 'pi pi-fw pi-sign-out', to: '/auth/logout' }]
-    },
+    }
 ]);
 </script>
 
