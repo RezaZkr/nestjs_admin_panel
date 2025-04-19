@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@global/services/prisma.service';
-import { RoleResourceDto } from '../dto/role-resource.dto';
+import { RoleResourceDto } from '@role/dto/role-resource.dto';
 import { plainToInstance } from 'class-transformer';
-import { RoleIndexDto } from '../dto/role-index.dto';
+import { RoleIndexDto } from '@role/dto/role-index.dto';
 import { Prisma } from '@prisma/client';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
-import { RoleInterface } from '../interfaces/role.interface';
-import { UpdateRoleDto } from '../dto/update-role.dto';
+import { RoleInterface } from '@role/interfaces/role.interface';
+import { UpdateRoleDto } from '@role/dto/update-role.dto';
 
 @Injectable()
 export class RoleService {
@@ -77,17 +77,15 @@ export class RoleService {
         id,
       },
       include: {
-        permissions: {
-          include: {
-            permission: true,
-          },
-        },
+        permissions: true,
       },
     });
 
     if (!role) {
       throw new NotFoundException();
     }
+
+    console.log('role => ', role);
 
     return plainToInstance(RoleResourceDto, role, {
       excludeExtraneousValues: true,
@@ -95,19 +93,30 @@ export class RoleService {
   }
 
   async update(id: number, body: UpdateRoleDto): Promise<RoleResourceDto> {
-    const role: RoleInterface = await this.prismaService.role.findUnique({
+    const rolePermissions: { id: number }[] = body.permissions.map((permission_id: number): { id: number } => ({
+      id: permission_id,
+    }));
+
+    const updatedRole: RoleInterface = await this.prismaService.role.update({
       where: {
         id,
       },
+      data: {
+        name: body.name,
+        permissions: {
+          set: rolePermissions,
+        },
+      },
+      include: {
+        permissions: true,
+      },
     });
 
-    if (!role) {
+    if (!updatedRole) {
       throw new NotFoundException();
     }
-
-    //todo implement update role with their permissions
-
-    return plainToInstance(RoleResourceDto, role, {
+    //todo review role update from front to backend then continue implementation
+    return plainToInstance(RoleResourceDto, updatedRole, {
       excludeExtraneousValues: true,
     });
   }

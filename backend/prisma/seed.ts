@@ -1,21 +1,11 @@
-import { PrismaClient } from './generated/client';
+import { PrismaClient } from '@prisma/client';
+
 import * as bcrypt from 'bcrypt';
-import { UserInterface } from '@user/interfaces/user.interface';
-import { PermissionInterface } from '../src/permission/interfaces/permission.interface';
+import { PermissionInterface } from '@permission/interfaces/permission.interface';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const adminUser: UserInterface = await prisma.user.upsert({
-    where: { email: 'admin@gmail.com' },
-    update: {},
-    create: {
-      email: 'admin@gmail.com',
-      name: 'admin',
-      password: await hash('12345678'),
-    },
-  });
-
   const permissions: PermissionInterface[] = [
     {
       name: 'view_users',
@@ -61,6 +51,9 @@ async function main() {
     });
   }
 
+  const allPermissions = await prisma.permission.findMany();
+  const allPermissionIds: { id: number }[] = allPermissions.map((p): { id: number } => ({ id: p.id }));
+
   const adminRole = await prisma.role.upsert({
     where: { name: 'admin' },
     update: {},
@@ -69,35 +62,25 @@ async function main() {
     },
   });
 
-  const allPermissions = await prisma.permission.findMany();
-
-  for (const perm of allPermissions) {
-    await prisma.rolePermission.upsert({
-      where: {
-        role_id_permission_id: {
-          role_id: adminRole.id,
-          permission_id: perm.id,
-        },
-      },
-      update: {},
-      create: {
-        role_id: adminRole.id,
-        permission_id: perm.id,
-      },
-    });
-  }
-
-  await prisma.userRole.upsert({
-    where: {
-      user_id_role_id: {
-        user_id: adminUser.id,
-        role_id: adminRole.id,
+  await prisma.role.update({
+    where: { id: adminRole.id },
+    data: {
+      permissions: {
+        set: allPermissionIds,
       },
     },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'admin@gmail.com' },
     update: {},
     create: {
-      user_id: adminUser.id,
-      role_id: adminRole.id,
+      email: 'admin@gmail.com',
+      name: 'admin',
+      password: await hash('12345678'),
+      roles: {
+        connect: [{ id: adminRole.id }],
+      },
     },
   });
 

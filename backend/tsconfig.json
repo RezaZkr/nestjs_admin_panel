@@ -18,14 +18,20 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
+      "@auth/*": [
+        "src/auth/*"
+      ],
       "@global/*": [
         "src/global/*"
       ],
+      "@permission/*": [
+        "src/permission/*"
+      ],
+      "@role/*": [
+        "src/role/*"
+      ],
       "@user/*": [
         "src/user/*"
-      ],
-      "@auth/*": [
-        "src/auth/*"
       ]
     }
   }

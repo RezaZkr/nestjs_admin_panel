@@ -1,10 +1,10 @@
 import { Controller, Get, Query, UseGuards, Param, ParseIntPipe, Post, Body } from '@nestjs/common';
-import { RoleService } from '../services/role.service';
-import { RoleResourceDto } from '../dto/role-resource.dto';
-import { RoleIndexDto } from '../dto/role-index.dto';
+import { RoleService } from '@role/services/role.service';
+import { RoleResourceDto } from '@role/dto/role-resource.dto';
+import { RoleIndexDto } from '@role/dto/role-index.dto';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
 import { AuthGuard } from '@auth/guards/auth.guard';
-import { UpdateRoleDto } from '../dto/update-role.dto';
+import { UpdateRoleDto } from '@role/dto/update-role.dto';
 
 @UseGuards(AuthGuard)
 @Controller('roles')

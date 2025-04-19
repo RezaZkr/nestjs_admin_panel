@@ -1,6 +1,6 @@
 import { Expose } from 'class-transformer';
 import { BaseEntityDto } from '@global/dto/base.entity.dto';
-import { PermissionInterface } from '../interfaces/permission.interface';
+import { PermissionInterface } from '@permission/interfaces/permission.interface';
 
 export class PermissionResourceDto extends BaseEntityDto implements Partial<PermissionInterface> {
   @Expose()

@@ -6,8 +6,8 @@ import { UserModule } from '@user/user.module';
 import { GlobalModule } from '@global/global.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
-import { RoleModule } from './role/role.module';
-import { PermissionModule } from './permission/permission.module';
+import { RoleModule } from '@role/role.module';
+import { PermissionModule } from '@permission/permission.module';
 
 @Module({
   imports: [

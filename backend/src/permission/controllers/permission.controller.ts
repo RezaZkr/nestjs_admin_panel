@@ -1,8 +1,8 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { PermissionService } from '../services/permission.service';
+import { PermissionService } from '@permission/services/permission.service';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
-import { PermissionIndexDto } from '../dto/permission-index.dto';
-import { PermissionResourceDto } from '../dto/permission-resource.dto';
+import { PermissionIndexDto } from '@permission/dto/permission-index.dto';
+import { PermissionResourceDto } from '@permission/dto/permission-resource.dto';
 import { AuthGuard } from '@auth/guards/auth.guard';
 
 @UseGuards(AuthGuard)

@@ -56,7 +56,7 @@ const fetchData = async () => {
 
 const fillFormData = async (data) => {
     formData.name = data.name;
-    formData.permissions = data.permissions.map((permission) => permission.permission_id);
+    formData.permissions = data.permissions.map((permission) => permission.id);
 };
 
 const fetchPermissions = async () => {
@@ -85,7 +85,6 @@ const groupPermissions = async (permissions) => {
 
         await groupedPermissions[permission.group].push(permission);
     }
-
 };
 
 const update = async () => {
@@ -94,10 +93,9 @@ const update = async () => {
     formDataErrors.permissions = [];
     try {
         const response = await axios.post('roles/' + route.params.id, formData);
-
     } catch (error) {
         if (error.status === HttpStatusCode.BadRequest) {
-            Object.assign(formDataErrors, error.response.data);
+            Object.assign(formDataErrors, error.response.data.errors);
         }
     } finally {
         loading.value = false;

@@ -2,9 +2,11 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
-import { HttpExceptionFilter } from '@global/interceptors/http-exception.filter';
 import * as cookieParser from 'cookie-parser';
-import { validationExceptionFactory } from '@global/exceptions/validation.exception';
+import { HttpExceptionFilter } from '@global/filters/http-exception.filter';
+import { validationExceptionFactory } from '@global/filters/validation.exception';
+
+// import { validationExceptionFactory } from '@global/exceptions/validation.exception';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,14 +15,15 @@ async function bootstrap() {
 
   app.useGlobalPipes(
     new ValidationPipe({
-      transform: true,
+      transform: true, // برای تبدیل به نوع صحیح (مثل Date, int و...)
+      whitelist: true, // برای فیلتر کردن پروپرتی‌های اضافی
+      forbidNonWhitelisted: true, // برای جلوگیری از ارسال داده‌های غیرمجاز
       skipMissingProperties: false,
       exceptionFactory: validationExceptionFactory,
     }),
   );
 
-  //when enable error message structure wrong
-  // app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   app.enableCors({
     origin: 'http://localhost:5173',

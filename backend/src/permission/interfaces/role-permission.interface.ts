@@ -1,5 +1,5 @@
-import { RoleInterface } from '../../role/interfaces/role.interface';
-import { PermissionInterface } from './permission.interface';
+import { RoleInterface } from '@role/interfaces/role.interface';
+import { PermissionInterface } from '@permission/interfaces/permission.interface';
 
 export interface RolePermissionInterface {
   role_id: number;

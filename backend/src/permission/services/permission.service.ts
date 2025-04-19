@@ -3,8 +3,8 @@ import { PrismaService } from '@global/services/prisma.service';
 import { PaginationResponseResourceDto } from '@global/dto/offset-pagination/pagination-response-resource.dto';
 import { Prisma } from '@prisma/client';
 import { plainToInstance } from 'class-transformer';
-import { PermissionIndexDto } from '../dto/permission-index.dto';
-import { PermissionResourceDto } from '../dto/permission-resource.dto';
+import { PermissionIndexDto } from '@permission/dto/permission-index.dto';
+import { PermissionResourceDto } from '@permission/dto/permission-resource.dto';
 
 @Injectable()
 export class PermissionService {

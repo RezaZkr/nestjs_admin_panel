@@ -1,9 +1,9 @@
-import { RolePermissionInterface } from '../../permission/interfaces/role-permission.interface';
 import { UserInterface } from '@user/interfaces/user.interface';
+import { PermissionInterface } from '@permission/interfaces/permission.interface';
 
 export interface RoleInterface {
   id: number;
   name: string;
   users?: UserInterface[];
-  permissions?: RolePermissionInterface[];
+  permissions?: PermissionInterface[];
 }
